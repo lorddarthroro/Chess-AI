@@ -140,11 +140,46 @@ for i in range(8):
 piece = boardx.piece_at(getattr(chess, all_squares[1]))
 #print(list(board.legal_moves))
 AI = Algorithms(boardx)
-best_move = (AI.minimax(boardx, True, 4, None))
-move = chess.Move.from_uci(str(best_move))
-boardx.push(move)  # Make the move
-print(boardx)
-print(evaluateBoard(boardx))
+#print(evaluateBoard(boardx))
+print('Would you like to go FIRST (enter 1) or SECOND (enter 2)')
+first_or_second = input()
+if int(first_or_second) == 1:
+    while not boardx.is_game_over():
+
+
+        print('Please enter your move (in format of current location of piece + desired location ex. a2a4')
+        x = input()
+        move = chess.Move.from_uci(str(x))
+        if move in boardx.legal_moves:
+            boardx.push(move)
+        best_move = (AI.minimax(boardx, False, 2, None))
+        move = chess.Move.from_uci(str(best_move))
+        boardx.push(move)  # Make the move
+        print(boardx)
+
+        # displays gui in svg file
+        board_svg = chess.svg.board(boardx, size=350)
+        output_file = open('test.svg', "w")
+        output_file.write(board_svg)
+        output_file.close()
+else:
+    while not boardx.is_game_over():
+        best_move = (AI.minimax(boardx, True, 2, None))
+        move = chess.Move.from_uci(str(best_move))
+        boardx.push(move)  # Make the move
+        print(boardx)
+
+        # displays gui in svg file
+        board_svg = chess.svg.board(boardx, size=350)
+        output_file = open('test.svg', "w")
+        output_file.write(board_svg)
+        output_file.close()
+
+        print('Please enter your move (in format of current location of piece + desired location ex. a2a4')
+        x = input()
+        move = chess.Move.from_uci(str(x))
+        boardx.push(move)
+
 
 
 
