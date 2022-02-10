@@ -3,15 +3,15 @@ import chess.svg
 winner = False
 score = 0
 class Algorithms():
+    global bestmove
     def __init__(self, board1):
-        self.board = board1
+        self.boardx = board1
 
-    def minimax(self, board, isMax, depth):
-        global bestmove
+    def minimax(self, board, isMax, depth, bestmove):
         if(winner == True):
-            return board
+            return bestmove
         if(depth == 0):
-            return board
+            return bestmove
 
         if isMax:
             bestscore = -10000
@@ -20,35 +20,39 @@ class Algorithms():
 
                 currentMove = chess.Move.from_uci(str(move))
                 game = chessGame(board)
-                if (game.is_valid(currentMove)):
+                if (currentMove in board.legal_moves):
                     board.push(currentMove)
-                    Algorithms(board).minimax(board, False, depth - 1)
+                    Algorithms(board).minimax(board, False, depth - 1, bestmove)
                     if evaluateBoard(board) > bestscore:
                         bestscore = evaluateBoard(board)
                         bestmoveWhite = currentMove
+                        bestmove = currentMove
                     board.pop()
 
-            if (game.is_valid(currentMove)):
-                board.push(bestmoveWhite)
-            return board
+            if (bestmoveWhite in board.legal_moves):
+                bestmove = bestmoveWhite
+
+            return bestmove
 
 
         else:
             bestscore = 10000
 
+
             for move in board.legal_moves:
                 currentMove = chess.Move.from_uci(str(move))
                 game = chessGame(board)
-                if (game.is_valid(currentMove)):
+                if (currentMove in board.legal_moves):
                     board.push(currentMove)
-                    Algorithms(board).minimax(board, True, depth - 1)
+                    Algorithms(board).minimax(board, True, depth - 1, bestmove)
                     if evaluateBoard(board) < bestscore:
                         bestscore = evaluateBoard(board)
                         bestmoveBlack = currentMove
+                        bestmove = currentMove
                     board.pop()
-            if (game.is_valid(currentMove)):
-                board.push(bestmoveBlack)
-            return board
+            if (bestmoveBlack in board.legal_moves):
+                bestmove = bestmoveBlack
+            return bestmove
 
 
 
@@ -59,7 +63,7 @@ class chessGame():
 
     # might remove, doesn't do anything rn
     def is_valid(self, move):
-        legal_moves = list(board.legal_moves)  # creates list of legal moves
+        legal_moves = list(boardx.legal_moves)  # creates list of legal moves
         for moves in legal_moves:  # checks if move is legal
             if moves == Nf3:
                 return True
@@ -117,10 +121,10 @@ def evaluateBoard(board):
     return count
 
 
-board = chess.Board()
+boardx = chess.Board()
 
 Nf3 = chess.Move.from_uci("b1c3")
-game = chessGame(board)
+game = chessGame(boardx)
 #if (game.is_valid(Nf3)):
  #   board.push(Nf3)  # Make the move
 #board.pop()  # Unmake the last move
@@ -133,17 +137,19 @@ for i in range(8):
         all_squares.append((chess.FILE_NAMES[i].upper() + chess.RANK_NAMES[j]))
 # for i in all_squares:
 # print(i)
-piece = board.piece_at(getattr(chess, all_squares[1]))
+piece = boardx.piece_at(getattr(chess, all_squares[1]))
 #print(list(board.legal_moves))
-AI = Algorithms(board)
-AI.minimax(board, True, 6)
-print(board)
-print(evaluateBoard(board))
+AI = Algorithms(boardx)
+best_move = (AI.minimax(boardx, True, 4, None))
+move = chess.Move.from_uci(str(best_move))
+boardx.push(move)  # Make the move
+print(boardx)
+print(evaluateBoard(boardx))
 
 
 
 # displays gui in svg file
-board_svg = chess.svg.board(board, size=350)
+board_svg = chess.svg.board(boardx, size=350)
 output_file = open('test.svg', "w")
 output_file.write(board_svg)
 output_file.close()
