@@ -143,6 +143,8 @@ AI = Algorithms(boardx)
 #print(evaluateBoard(boardx))
 print('Would you like to go FIRST (enter 1) or SECOND (enter 2)')
 first_or_second = input()
+print('Please choose a depth')
+depth = int(input())
 if int(first_or_second) == 1:
     while not boardx.is_game_over():
 
@@ -152,7 +154,7 @@ if int(first_or_second) == 1:
         move = chess.Move.from_uci(str(x))
         if move in boardx.legal_moves:
             boardx.push(move)
-        best_move = (AI.minimax(boardx, False, 2, None))
+        best_move = (AI.minimax(boardx, False, depth, None))
         move = chess.Move.from_uci(str(best_move))
         boardx.push(move)  # Make the move
         print(boardx)
@@ -164,7 +166,7 @@ if int(first_or_second) == 1:
         output_file.close()
 else:
     while not boardx.is_game_over():
-        best_move = (AI.minimax(boardx, True, 2, None))
+        best_move = (AI.minimax(boardx, True, depth, None))
         move = chess.Move.from_uci(str(best_move))
         boardx.push(move)  # Make the move
         print(boardx)
