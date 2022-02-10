@@ -54,7 +54,7 @@ def evaluateBoard(board):
             count += 100
         elif str(piece) == 'q':
             count -= 100
-        if s in (19, 20, 21, 26, 27, 28, 29, 30, 35, 36, 37, 38): #checks center squares (center control good)
+        if s in (18, 19, 20, 21, 26, 27, 28, 29, 34, 35, 36, 37): #checks center squares (center control good)
             if str(piece) == 'P':
                 count += 1
             elif str(piece) == 'p':
@@ -71,7 +71,7 @@ def evaluateBoard(board):
                 count += 4
             elif str(piece) == 'q':
                 count -= 4
-
+    #TO DO: add hueristics for rook placement, castling, and fiencetto bishop
     return count
 
 
@@ -83,7 +83,7 @@ if (game.is_valid(Nf3)):
     board.push(Nf3)  # Make the move
 board.pop()  # Unmake the last move
 squares = (chess.A1, chess.A2)  # oh lord
-print(chess.RANK_NAMES + chess.FILE_NAMES)
+#print(chess.RANK_NAMES + chess.FILE_NAMES)
 # all_squares holds all squares
 all_squares = []
 for i in range(8):
@@ -92,8 +92,8 @@ for i in range(8):
 # for i in all_squares:
 # print(i)
 piece = board.piece_at(getattr(chess, all_squares[1]))
-print(list(board.legal_moves))
-evaluateBoard(board)
+#print(list(board.legal_moves))
+print(evaluateBoard(board));
 
 # displays gui in svg file
 board_svg = chess.svg.board(board, size=350)
