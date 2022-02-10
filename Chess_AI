@@ -1,0 +1,102 @@
+import chess.svg
+
+
+class Algorithms():
+    def __init__(self, board):
+        self.board = board
+
+    def minimax(self, isMax, eval):
+        if (isMax):
+            Algorithms().minimax(self, False, eval)
+        else:
+            Algorithms().minimax(self, True, eval)
+
+
+class chessGame():
+    def __init__(self, board):
+        self.board = board
+        self = self
+
+    # might remove, doesn't do anything rn
+    def is_valid(self, move):
+        legal_moves = list(board.legal_moves)  # creates list of legal moves
+        for moves in legal_moves:  # checks if move is legal
+            if moves == Nf3:
+                return True
+        return False
+
+
+def evaluateBoard(board):
+    count = 0
+    # can't move your own king into checkmate, so this will return 1000 for a winning move for whoevers turn it is
+    if board.is_checkmate():
+        if board.turn == False:  # return 1000 if white went last
+            count += 1000
+        else:  # return -1000 if black went last
+            count -= 1000
+
+    for s in range(64):
+        # capital letters = white, lowercase = black
+        piece = board.piece_at(getattr(chess, all_squares[s]))
+        if str(piece) == 'P':
+            count += 10
+        elif str(piece) == 'p':
+            count -= 10
+        elif str(piece) == 'B' or str(piece) == 'N':
+            count += 30
+        elif str(piece) == 'b' or str(piece) == 'n':
+            count -= 30
+        elif str(piece) == 'R':
+            count += 50
+        elif str(piece) == 'r':
+            count -= 50
+        elif str(piece) == 'Q':
+            count += 100
+        elif str(piece) == 'q':
+            count -= 100
+        if s in (19, 20, 21, 26, 27, 28, 29, 30, 35, 36, 37, 38): #checks center squares (center control good)
+            if str(piece) == 'P':
+                count += 1
+            elif str(piece) == 'p':
+                count -= 1
+            elif str(piece) == 'B':
+                count += 2
+            elif str(piece) == 'b':
+                count -= 2
+            elif str(piece) == 'N':
+                count += 5
+            elif str(piece) == 'n':
+                count -= 5
+            elif str(piece) == 'Q':
+                count += 4
+            elif str(piece) == 'q':
+                count -= 4
+
+    return count
+
+
+board = chess.Board()
+
+Nf3 = chess.Move.from_uci("g1f3")
+game = chessGame(board)
+if (game.is_valid(Nf3)):
+    board.push(Nf3)  # Make the move
+board.pop()  # Unmake the last move
+squares = (chess.A1, chess.A2)  # oh lord
+print(chess.RANK_NAMES + chess.FILE_NAMES)
+# all_squares holds all squares
+all_squares = []
+for i in range(8):
+    for j in range(8):
+        all_squares.append((chess.FILE_NAMES[i].upper() + chess.RANK_NAMES[j]))
+# for i in all_squares:
+# print(i)
+piece = board.piece_at(getattr(chess, all_squares[1]))
+print(list(board.legal_moves))
+evaluateBoard(board)
+
+# displays gui in svg file
+board_svg = chess.svg.board(board, size=350)
+output_file = open('test.svg', "w")
+output_file.write(board_svg)
+output_file.close()
