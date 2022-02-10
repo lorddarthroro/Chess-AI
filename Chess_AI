@@ -1,15 +1,46 @@
 import chess.svg
 
-
+winner = False
+score = 0
 class Algorithms():
-    def __init__(self, board):
-        self.board = board
+    def __init__(self, board1):
+        self.board = board1
 
-    def minimax(self, isMax, eval):
-        if (isMax):
-            Algorithms().minimax(self, False, eval)
+    def minimax(self, board, isMax, depth):
+        global bestmove
+        if(winner == True):
+            return board
+        if(depth == 0):
+            return board
+        if isMax:
+            bestscore = -10000
+
+            for move in board.legal_moves:
+                print(move)
+                currentMove = chess.Move.from_uci(str(move))
+                board.push(currentMove)
+                Algorithms(board).minimax(board, False, depth - 1)
+                board.pop()
+                if evaluateBoard(board) > bestscore:
+                    bestscore = evaluateBoard(board)
+                    bestmove = currentMove
+            return board.push(bestmove)
+
+
+
         else:
-            Algorithms().minimax(self, True, eval)
+            bestscore = 10000
+
+            for move in board.legal_moves:
+                currentMove = chess.Move.from_uci(str(move))
+                board.push(currentMove)
+                Algorithms(board).minimax(board, True, depth - 1)
+                board.pop
+                if evaluateBoard(board) < bestscore:
+                    bestscore = evaluateBoard(board)
+                    bestmove = currentMove
+            return board.push(bestmove)
+
 
 
 class chessGame():
@@ -30,6 +61,8 @@ def evaluateBoard(board):
     count = 0
     # can't move your own king into checkmate, so this will return 1000 for a winning move for whoevers turn it is
     if board.is_checkmate():
+        global winner
+        winner = True
         if board.turn == False:  # return 1000 if white went last
             count += 1000
         else:  # return -1000 if black went last
@@ -54,7 +87,7 @@ def evaluateBoard(board):
             count += 100
         elif str(piece) == 'q':
             count -= 100
-        if s in (18, 19, 20, 21, 26, 27, 28, 29, 34, 35, 36, 37): #checks center squares (center control good)
+        if s in (18, 19, 20, 21, 26, 27, 28, 29, 34, 35, 36, 37, 42, 43, 44, 45): #checks center squares (center control good)
             if str(piece) == 'P':
                 count += 1
             elif str(piece) == 'p':
@@ -93,7 +126,10 @@ for i in range(8):
 # print(i)
 piece = board.piece_at(getattr(chess, all_squares[1]))
 #print(list(board.legal_moves))
-print(evaluateBoard(board));
+AI = Algorithms(board)
+AI.minimax(board, True, 1)
+
+
 
 # displays gui in svg file
 board_svg = chess.svg.board(board, size=350)
