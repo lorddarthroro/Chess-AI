@@ -12,20 +12,25 @@ class Algorithms():
             return board
         if(depth == 0):
             return board
+
         if isMax:
             bestscore = -10000
 
             for move in board.legal_moves:
-                print(move)
-                currentMove = chess.Move.from_uci(str(move))
-                board.push(currentMove)
-                Algorithms(board).minimax(board, False, depth - 1)
-                board.pop()
-                if evaluateBoard(board) > bestscore:
-                    bestscore = evaluateBoard(board)
-                    bestmove = currentMove
-            return board.push(bestmove)
 
+                currentMove = chess.Move.from_uci(str(move))
+                game = chessGame(board)
+                if (game.is_valid(currentMove)):
+                    board.push(currentMove)
+                    Algorithms(board).minimax(board, False, depth - 1)
+                    if evaluateBoard(board) > bestscore:
+                        bestscore = evaluateBoard(board)
+                        bestmoveWhite = currentMove
+                    board.pop()
+
+            if (game.is_valid(currentMove)):
+                board.push(bestmoveWhite)
+            return board
 
 
         else:
@@ -33,13 +38,17 @@ class Algorithms():
 
             for move in board.legal_moves:
                 currentMove = chess.Move.from_uci(str(move))
-                board.push(currentMove)
-                Algorithms(board).minimax(board, True, depth - 1)
-                board.pop
-                if evaluateBoard(board) < bestscore:
-                    bestscore = evaluateBoard(board)
-                    bestmove = currentMove
-            return board.push(bestmove)
+                game = chessGame(board)
+                if (game.is_valid(currentMove)):
+                    board.push(currentMove)
+                    Algorithms(board).minimax(board, True, depth - 1)
+                    if evaluateBoard(board) < bestscore:
+                        bestscore = evaluateBoard(board)
+                        bestmoveBlack = currentMove
+                    board.pop()
+            if (game.is_valid(currentMove)):
+                board.push(bestmoveBlack)
+            return board
 
 
 
@@ -110,11 +119,11 @@ def evaluateBoard(board):
 
 board = chess.Board()
 
-Nf3 = chess.Move.from_uci("g1f3")
+Nf3 = chess.Move.from_uci("b1c3")
 game = chessGame(board)
-if (game.is_valid(Nf3)):
-    board.push(Nf3)  # Make the move
-board.pop()  # Unmake the last move
+#if (game.is_valid(Nf3)):
+ #   board.push(Nf3)  # Make the move
+#board.pop()  # Unmake the last move
 squares = (chess.A1, chess.A2)  # oh lord
 #print(chess.RANK_NAMES + chess.FILE_NAMES)
 # all_squares holds all squares
@@ -127,7 +136,9 @@ for i in range(8):
 piece = board.piece_at(getattr(chess, all_squares[1]))
 #print(list(board.legal_moves))
 AI = Algorithms(board)
-AI.minimax(board, True, 1)
+AI.minimax(board, True, 6)
+print(board)
+print(evaluateBoard(board))
 
 
 
