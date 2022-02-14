@@ -117,6 +117,7 @@ def evaluateBoard(board):
                 count += 4
             elif str(piece) == 'q':
                 count -= 4
+
     #TO DO: add hueristics for rook placement, castling, and fiencetto bishop
     return count
 
@@ -181,6 +182,7 @@ else:
         x = input()
         move = chess.Move.from_uci(str(x))
         boardx.push(move)
+        print(boardx)
 
 
 
