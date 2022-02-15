@@ -99,7 +99,18 @@ def evaluateBoard(board):
         elif str(piece) == 'Q':
             count += 100
         elif str(piece) == 'q':
-            count -= 100
+            count -= 100       
+        elif str(piece) == 'K':
+            if s == 16:
+                 count += 5
+            elif s == 48:
+                 count += 5
+        if str(piece) == 'k':
+            if s == 23:
+                count -= 5
+            elif s == 55:
+                count -= 5
+            
         if s in (18, 19, 20, 21, 26, 27, 28, 29, 34, 35, 36, 37, 42, 43, 44, 45): #checks center squares (center control good)
             if str(piece) == 'P':
                 count += 1
