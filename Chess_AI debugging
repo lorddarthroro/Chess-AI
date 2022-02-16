@@ -227,3 +227,4 @@ board_svg = chess.svg.board(boardx, size=350)
 output_file = open('test.svg', "w")
 output_file.write(board_svg)
 output_file.close()
+
