@@ -23,6 +23,8 @@ class Algorithms():
             for move in board.legal_moves:
 
                 currentMove = chess.Move.from_uci(str(move))
+                if bestmove == None:
+                    bestmove == currentMove
                 game = chessGame(board)
                 if (currentMove in board.legal_moves):
                     board.push(currentMove)
@@ -43,10 +45,6 @@ class Algorithms():
                     board.pop()
 
 
-
-            if (bestmoveWhite in board.legal_moves):
-                bestmove = bestmoveWhite
-
             return bestmove
 
 
@@ -55,6 +53,8 @@ class Algorithms():
             holder = False
             for move in board.legal_moves:
                 currentMove = chess.Move.from_uci(str(move))
+                if bestmove == None:
+                    bestmove == currentMove
                 game = chessGame(board)
                 if (currentMove in board.legal_moves):
                     board.push(currentMove)
@@ -72,9 +72,6 @@ class Algorithms():
                         board.pop()
                         holder = False
                     board.pop()
-
-            if (bestmoveBlack in board.legal_moves):
-                bestmove = bestmoveBlack
             return bestmove
 
 
@@ -191,6 +188,7 @@ if int(first_or_second) == 1:
         print(boardx)
         print()
         best_move = (AI.minimax(boardx, False, depth, None))
+        print(best_move)
         move = chess.Move.from_uci(str(best_move))
         boardx.push(move)  # Make the move
         print(boardx)
@@ -227,4 +225,3 @@ board_svg = chess.svg.board(boardx, size=350)
 output_file = open('test.svg', "w")
 output_file.write(board_svg)
 output_file.close()
-
