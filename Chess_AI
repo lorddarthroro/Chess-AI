@@ -10,7 +10,7 @@ class Algorithms():
     def __init__(self, board1):
         self.boardx = board1
 
-    def minimax(self, board, isMax, depth, bestmove):
+    def minimax(self, board, isMax, depth, bestmove, alpha, beta):
         if (winner == True):
             return bestmove
         if (depth == 0):
@@ -29,7 +29,7 @@ class Algorithms():
                 if (currentMove in board.legal_moves):
                     board.push(currentMove)
 
-                    nextMove = Algorithms(board).minimax(board, False, depth - 1, bestmove)
+                    nextMove = Algorithms(board).minimax(board, False, depth - 1, bestmove, alpha, beta)
                     if(nextMove in board.legal_moves):
                         board.push(nextMove)
                         Holder = True
@@ -37,13 +37,18 @@ class Algorithms():
                         bestscore = evaluateBoard(board)
                         bestmoveWhite = currentMove
                         bestmove = currentMove
+
+
                     if Holder == True:
                         board.pop()
                         Holder = False
                     else:
                         Holder = False
                     board.pop()
-
+                if bestscore > alpha:
+                    alpha = bestscore
+                if beta <= alpha:
+                    break
 
             return bestmove
 
@@ -58,7 +63,7 @@ class Algorithms():
                 game = chessGame(board)
                 if (currentMove in board.legal_moves):
                     board.push(currentMove)
-                    nextMove = Algorithms(board).minimax(board, True, depth - 1, bestmove)
+                    nextMove = Algorithms(board).minimax(board, True, depth - 1, bestmove, alpha, beta)
                     if (nextMove in board.legal_moves):
                         board.push(nextMove)
                         holder = True
@@ -72,6 +77,10 @@ class Algorithms():
                         board.pop()
                         holder = False
                     board.pop()
+                if bestscore < beta:
+                    beta = bestscore
+                if beta <= alpha:
+                    break
             return bestmove
 
 
@@ -177,6 +186,8 @@ print('Would you like to go FIRST (enter 1) or SECOND (enter 2)')
 first_or_second = input()
 print('Please choose a depth')
 depth = int(input())
+alp = -1000000
+bet = 1000000
 if int(first_or_second) == 1:
     while not boardx.is_game_over():
 
@@ -187,7 +198,7 @@ if int(first_or_second) == 1:
             boardx.push(move)
         print(boardx)
         print()
-        best_move = (AI.minimax(boardx, False, depth, None))
+        best_move = (AI.minimax(boardx, False, depth, None, alp, bet))
         print(best_move)
         move = chess.Move.from_uci(str(best_move))
         boardx.push(move)  # Make the move
@@ -201,7 +212,7 @@ if int(first_or_second) == 1:
         output_file.close()
 else:
     while not boardx.is_game_over():
-        best_move = (AI.minimax(boardx, True, depth, None))
+        best_move = (AI.minimax(boardx, True, depth, None, alp, bet))
         move = chess.Move.from_uci(str(best_move))
         boardx.push(move)  # Make the move
         print(boardx)
